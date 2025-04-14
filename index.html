@@ -2,164 +2,599 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>HatırLatif</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      background: #f2f2f2;
-    }
-    .menu-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      padding: 80px 20px;
-      justify-items: center;
-    }
-    .menu-button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 40px;
-      border: none;
-      border-radius: 20px;
-      width: 120px;
-      height: 120px;
-      font-size: 16px;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .popup-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .popup {
-      background: white;
-      padding: 20px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 300px;
-      text-align: center;
-      position: relative;
-    }
-    .popup h2 {
-      margin: 0 0 10px;
-    }
-    .close-popup {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: none;
-      border: none;
-      font-size: 18px;
-      color: #007BFF;
-      cursor: pointer;
-    }
-    .year-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .year-nav button {
-      background: none;
-      border: none;
-      font-size: 18px;
-      color: #007BFF;
-      cursor: pointer;
-    }
-    .months {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    .month-button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 0;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="menu-grid">
-    <button class="menu-button">Diyetim</button>
-    <button class="menu-button">Kontrollerim</button>
-    <button class="menu-button" id="calendarButton">🗓️</button>
-    <button class="menu-button">Hedeflerim</button>
+  <!-- ANA MENÜ -->
+  <div id="mainMenu" class="grid-menu">
+    <button class="menu-btn" onclick="goToPage('diyetim')">Diyetim</button>
+    <button class="menu-btn" onclick="goToPage('kontrollerim')">Kontrollerim</button>
+    <button class="menu-btn" onclick="goToPage('takvim')">🗓️</button>
+    <button class="menu-btn" onclick="goToPage('hedeflerim')">Hedeflerim</button>
   </div>
 
-  <div class="popup-overlay" id="monthPopup">
-    <div class="popup">
-      <button class="close-popup" onclick="toggleMonthPopup()">×</button>
-      <div class="year-nav">
-        <button onclick="changeYear(-1)">‹</button>
-        <h2 id="popupYear">2025</h2>
-        <button onclick="changeYear(1)">›</button>
-      </div>
-      <div class="months" id="monthGrid"></div>
+  <!-- DİYETİM -->
+  <div id="diyetimPage" class="hidden">
+    <div class="top-bar">
+      <span class="back-btn" onclick="goBack()">←</span>
+      <h2>Diyetim</h2>
+    </div>
+    <h3 class="section-title">Yaptıklarım</h3>
+    <div id="yaptiklar" class="grid7"></div>
+    <h3 class="section-title">Yapacaklarım</h3>
+    <div id="yapacaklar" class="grid7"></div>
+  </div>
+
+  <!-- GÜN DETAY -->
+  <div id="dayDetailPage" class="hidden">
+    <div class="top-bar">
+      <span class="back-btn" onclick="goBack()">←</span>
+      <h2 id="detailDayName">Gün Detayı</h2>
+    </div>
+    <div class="detail-form">
+      <label>Sabah</label>
+      <input id="inputSabah" class="input-meal" placeholder="Sabah yemeği" />
+      <label>Öğle</label>
+      <input id="inputOgle" class="input-meal" placeholder="Öğle yemeği" />
+      <label>Akşam</label>
+      <input id="inputAksam" class="input-meal" placeholder="Akşam yemeği" />
+      <button class="save-btn" onclick="saveDayDetail()">Kaydet</button>
     </div>
   </div>
 
-  <script>
-    let currentYear = new Date().getFullYear();
+  <!-- KONTROLLERİM -->
+  <div id="kontrollerimPage" class="hidden">
+    <div class="top-bar">
+      <span class="back-btn" onclick="goBack()">←</span>
+      <h2>Kontrollerim</h2>
+    </div>
+    <p style="text-align:center;">Bu bölüm çok yakında!</p>
+  </div>
 
-    function toggleMonthPopup(forceClose = false) {
-      const popup = document.getElementById("monthPopup");
-      if (forceClose) {
-        popup.style.display = "none";
-      } else {
-        popup.style.display = popup.style.display === "flex" ? "none" : "flex";
-        if (popup.style.display === "flex") {
-          document.getElementById("popupYear").textContent = currentYear;
-          generateMonthButtons(currentYear);
-        }
-      }
-    }
+  <!-- HEDEFLERİM -->
+  <div id="hedeflerimPage" class="hidden">
+    <div class="top-bar">
+      <span class="back-btn" onclick="goBack()">←</span>
+      <h2>Hedeflerim</h2>
+    </div>
+    <p style="text-align:center;">Bu bölüm çok yakında!</p>
+  </div>
 
-    function changeYear(offset) {
-      currentYear += offset;
-      document.getElementById("popupYear").textContent = currentYear;
-      generateMonthButtons(currentYear);
-    }
+  <!-- TAKVİM -->
+  <div id="takvimPage" class="hidden">
+    <div class="top-bar">
+      <span class="back-btn" onclick="goBack()">←</span>
+      <h2>Takvim</h2>
+    </div>
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)">‹</button>
+      <h3 id="calendarTitle" onclick="toggleMonthPopup()">Nisan 2025</h3>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="calendar-days">
+      <div>Pzt</div><div>Sal</div><div>Çar</div><div>Per</div><div>Cum</div><div>Cmt</div><div>Paz</div>
+    </div>
+    <div id="calendarGrid" class="calendar-grid"></div>
+  </div>
 
-    function generateMonthButtons(year) {
-      const months = [
-        "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
-        "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
-      ];
-      const container = document.getElementById("monthGrid");
-      container.innerHTML = "";
-      months.forEach((name, i) => {
-        const btn = document.createElement("button");
-        btn.className = "month-button";
-        btn.textContent = name;
-        btn.onclick = () => {
-          alert(`${name} ${year} seçildi`);
-          toggleMonthPopup(true);
-        };
-        container.appendChild(btn);
-      });
-    }
+  <!-- TAKVİM POPUP -->
+  <div id="monthPopup" class="popup hidden" onclick="popupClickOutside(event)">
+    <div class="popup-inner" onclick="event.stopPropagation()">
+      <button class="popup-close" onclick="toggleMonthPopup()">×</button>
+      <div class="popup-header">
+        <button onclick="changePopupYear(-1)">‹</button>
+        <h4 id="popupYear">2025</h4>
+        <button onclick="changePopupYear(1)">›</button>
+      </div>
+      <div id="popupMonthGrid" class="month-grid-3col"></div>
+    </div>
+  </div>
 
-    document.getElementById("calendarButton").addEventListener("click", () => toggleMonthPopup());
-
-    // Pop-up dışına tıklayınca kapanması
-    window.addEventListener("click", function(e) {
-      const popup = document.getElementById("monthPopup");
-      if (e.target === popup) toggleMonthPopup(true);
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, sans-serif;
+  background: #f8f8f8;
+  color: #333;
+}
+
+/* Ana Menü */
+.grid-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+  padding: 50px 30px;
+  height: 100vh;
+  box-sizing: border-box;
+  align-content: center;
+  justify-items: center;
+}
+
+.menu-btn {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 20px;
+  width: 130px;
+  height: 130px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.menu-btn:hover {
+  background-color: #45a049;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Üst Bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 12px 16px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.back-btn {
+  font-size: 28px;
+  margin-right: 12px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background-color: #eaeaea;
+}
+
+.back-btn:hover {
+  background-color: #ddd;
+}
+
+.section-title {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+/* Gün Kutuları */
+.grid7 {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 10px;
+}
+
+.day-box {
+  min-width: 150px;
+  background-color: white;
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.day-box h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Detay Sayfası */
+.detail-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-meal {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.save-btn {
+  padding: 12px;
+  background: #4CAF50;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+/* Takvim Sayfası */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.calendar-header h3 {
+  margin: 0;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.calendar-header button {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 10px 16px;
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 10px 16px 30px;
+  gap: 8px;
+}
+
+.calendar-day {
+  background: #eee;
+  border-radius: 12px;
+  padding: 8px 4px;
+  font-size: 12px;
+  text-align: center;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.4;
+}
+
+.today {
+  outline: 3px solid #4CAF50;
+}
+
+/* Popup */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.popup-inner {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 85%;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  text-align: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* X (Kapat) Tuşu */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #555;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.popup-header h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.popup-header button {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Aylık Mini Takvimler */
+.month-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding-bottom: 20px;
+}
+
+.month-box {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 6px;
+  font-size: 12px;
+  background-color: #f9f9f9;
+}
+
+.month-box h5 {
+  margin: 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.month-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 10px;
+  gap: 2px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.month-day {
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.month-day:hover {
+  background-color: #d9fdd3;
+  cursor: pointer;
+}
+
+let currentDetailDate = "";
+let calendarMonthOffset = 0;
+let popupYear = new Date().getFullYear();
+let historyStack = [];
+
+function goToPage(target) {
+  const currentPage = document.querySelector("body > div:not(.hidden)");
+  if (currentPage && currentPage.id !== target + "Page") {
+    historyStack.push(currentPage.id);
+  }
+
+  document.querySelectorAll("body > div").forEach(el => {
+    if (el.id.endsWith("Page") || el.id === "mainMenu") {
+      el.classList.add("hidden");
+    }
+  });
+  document.getElementById(target + "Page").classList.remove("hidden");
+
+  if (target === "takvim") generateCalendar();
+}
+
+function goBack() {
+  const popup = document.getElementById("monthPopup");
+  if (!popup.classList.contains("hidden")) {
+    popup.classList.add("hidden");
+    return;
+  }
+
+  const prevPageId = historyStack.pop() || "mainMenu";
+  document.querySelectorAll("body > div").forEach(el => {
+    if (el.id.endsWith("Page") || el.id === "mainMenu") {
+      el.classList.add("hidden");
+    }
+  });
+  document.getElementById(prevPageId).classList.remove("hidden");
+
+  if (prevPageId === "takvimPage") generateCalendar();
+}
+
+function getDateString(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().split("T")[0];
+}
+
+function getData() {
+  return JSON.parse(localStorage.getItem("hatirlatif") || "{}");
+}
+
+function setData(data) {
+  localStorage.setItem("hatirlatif", JSON.stringify(data));
+}
+
+function loadData() {
+  const veriler = getData();
+  const yaptiklarDiv = document.getElementById("yaptiklar");
+  const yapacaklarDiv = document.getElementById("yapacaklar");
+  yaptiklarDiv.innerHTML = "";
+  yapacaklarDiv.innerHTML = "";
+
+  const today = getDateString(0);
+
+  for (let i = 6; i >= 0; i--) {
+    const date = getDateString(-i);
+    const day = veriler[date] || { yaptiklarim: {}, yapacaklarim: {} };
+    const box = document.createElement("div");
+    box.className = "day-box";
+    box.innerHTML = `<h3>${date}</h3>
+      <p><strong>Sabah:</strong> ${day.yaptiklarim.sabah || "-"}</p>
+      <p><strong>Öğle:</strong> ${day.yaptiklarim.ogle || "-"}</p>
+      <p><strong>Akşam:</strong> ${day.yaptiklarim.aksam || "-"}</p>`;
+    yaptiklarDiv.appendChild(box);
+  }
+
+  for (let i = 0; i < 7; i++) {
+    const date = getDateString(i);
+    const day = veriler[date] || { yaptiklarim: {}, yapacaklarim: {} };
+    const box = document.createElement("div");
+    box.className = "day-box";
+    box.innerHTML = `<h3>${date}</h3>
+      <p>Sabah: ${day.yapacaklarim.sabah || "-"}</p>
+      <p>Öğle: ${day.yapacaklarim.ogle || "-"}</p>
+      <p>Akşam: ${day.yapacaklarim.aksam || "-"}</p>`;
+    box.onclick = () => openDayDetail(date);
+    yapacaklarDiv.appendChild(box);
+  }
+}
+
+function openDayDetail(date) {
+  const data = getData()[date]?.yapacaklarim || {};
+  currentDetailDate = date;
+  document.getElementById("detailDayName").innerText = `Gün: ${date}`;
+  document.getElementById("inputSabah").value = data.sabah || "";
+  document.getElementById("inputOgle").value = data.ogle || "";
+  document.getElementById("inputAksam").value = data.aksam || "";
+  goToPage("dayDetail");
+}
+
+function saveDayDetail() {
+  const veriler = getData();
+  const date = currentDetailDate;
+  if (!veriler[date]) veriler[date] = { yaptiklarim: {}, yapacaklarim: {} };
+  veriler[date].yapacaklarim = {
+    sabah: document.getElementById("inputSabah").value,
+    ogle: document.getElementById("inputOgle").value,
+    aksam: document.getElementById("inputAksam").value
+  };
+  setData(veriler);
+  loadData();
+  goBack();
+}
+
+// TAKVİM SAYFASI
+function changeMonth(offset) {
+  calendarMonthOffset += offset;
+  generateCalendar();
+}
+
+function generateCalendar() {
+  const grid = document.getElementById("calendarGrid");
+  const title = document.getElementById("calendarTitle");
+  grid.innerHTML = "";
+
+  const now = new Date();
+  const viewDate = new Date(now.getFullYear(), now.getMonth() + calendarMonthOffset, 1);
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+  const todayStr = now.toISOString().split("T")[0];
+
+  const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+  title.textContent = `${monthNames[month]} ${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+  for (let i = 0; i < startOffset; i++) {
+    const emptyBox = document.createElement("div");
+    emptyBox.className = "calendar-day";
+    grid.appendChild(emptyBox);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const box = document.createElement("div");
+    box.className = "calendar-day";
+    if (dateStr === todayStr) box.classList.add("today");
+    box.innerHTML = `<strong>${day}</strong>`;
+    grid.appendChild(box);
+  }
+}
+
+// POPUP TAKVİM
+function toggleMonthPopup() {
+  const popup = document.getElementById("monthPopup");
+  popup.classList.toggle("hidden");
+  if (!popup.classList.contains("hidden")) {
+    document.getElementById("popupYear").innerText = popupYear;
+    renderPopupMonths();
+  }
+}
+
+function popupClickOutside(event) {
+  const popup = document.getElementById("monthPopup");
+  popup.classList.add("hidden");
+}
+
+function changePopupYear(offset) {
+  popupYear += offset;
+  document.getElementById("popupYear").innerText = popupYear;
+  renderPopupMonths();
+}
+
+function renderPopupMonths() {
+  const container = document.getElementById("popupMonthGrid");
+  container.innerHTML = "";
+
+  const monthNames = [
+    "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+    "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+  ];
+
+  for (let i = 0; i < 12; i++) {
+    const monthBox = document.createElement("div");
+    monthBox.className = "month-box";
+
+    const monthName = document.createElement("h5");
+    monthName.innerText = monthNames[i];
+    monthBox.appendChild(monthName);
+
+    const daysGrid = document.createElement("div");
+    daysGrid.className = "month-days";
+
+    const daysInMonth = new Date(popupYear, i + 1, 0).getDate();
+    const firstDay = new Date(popupYear, i, 1).getDay();
+    const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+    for (let k = 0; k < startOffset; k++) {
+      const empty = document.createElement("div");
+      daysGrid.appendChild(empty);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayDiv = document.createElement("div");
+      dayDiv.className = "month-day";
+      dayDiv.innerText = day;
+      dayDiv.onclick = () => {
+        const now = new Date();
+        calendarMonthOffset = (popupYear - now.getFullYear()) * 12 + (i - now.getMonth());
+        generateCalendar();
+        document.getElementById("monthPopup").classList.add("hidden");
+      };
+      daysGrid.appendChild(dayDiv);
+    }
+
+    monthBox.appendChild(daysGrid);
+    container.appendChild(monthBox);
+  }
+}
+
+// BAŞLAT
+loadData();
+generateCalendar();
