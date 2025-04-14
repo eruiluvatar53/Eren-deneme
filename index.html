@@ -1,1 +1,100 @@
 https://eruiluvatar53.github.io/Eren-deneme/
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HatırLatif</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, sans-serif;
+      background: #f8f8f8;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      justify-content: center;
+      align-content: center;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .menu-btn {
+      background: #4CAF50;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .menu-btn:active {
+      background: #388E3C;
+    }
+    .page {
+      display: none;
+      padding: 20px;
+    }
+    .active {
+      display: block;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+    }
+    .back-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="mainMenu" class="menu-grid">
+    <button class="menu-btn" onclick="showPage('diyetim')">Diyetim</button>
+    <button class="menu-btn" onclick="showPage('kontrollerim')">Kontrollerim</button>
+    <button class="menu-btn" onclick="showPage('takvim')">🗓️</button>
+    <button class="menu-btn" onclick="showPage('hedeflerim')">Hedeflerim</button>
+  </div>
+
+  <div id="diyetim" class="page">
+    <div class="top-bar"><button class="back-btn" onclick="goBack()">←</button><h2>Diyetim</h2></div>
+    <p>Yaptıkların ve Yapacakların burada olacak.</p>
+  </div>
+
+  <div id="kontrollerim" class="page">
+    <div class="top-bar"><button class="back-btn" onclick="goBack()">←</button><h2>Kontrollerim</h2></div>
+    <p>Kan şekeri, su tüketimi, kilo takibi vs.</p>
+  </div>
+
+  <div id="takvim" class="page">
+    <div class="top-bar"><button class="back-btn" onclick="goBack()">←</button><h2>Takvim</h2></div>
+    <p>Günlük kalori hedefleri ve geçmiş veriler takvimi.</p>
+  </div>
+
+  <div id="hedeflerim" class="page">
+    <div class="top-bar"><button class="back-btn" onclick="goBack()">←</button><h2>Hedeflerim</h2></div>
+    <p>Buraya hedefler ekranı gelecek. (Çok yakında)</p>
+  </div>
+
+  <script>
+    let lastPage = null;
+    function showPage(pageId) {
+      lastPage = 'mainMenu';
+      document.getElementById('mainMenu').style.display = 'none';
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+    function goBack() {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('mainMenu').style.display = 'grid';
+    }
+  </script>
+</body>
+</html>
