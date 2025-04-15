@@ -2,547 +2,339 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="HatırLatif" />
-  <meta name="mobile-web-app-capable" content="yes">
-  <title>HatırLatif</title>
-  <style>
-    /* CSS BURADA BAŞLIYOR */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, sans-serif;
-      background: #f8f8f8;
-      color: #333;
-    }
-    .grid-menu {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px 20px;
-      padding: 50px 30px;
-      height: 100vh;
-      box-sizing: border-box;
-      align-content: center;
-      justify-items: center;
-    }
-    .menu-btn {
-      background-color: #4CAF50;
-      color: white;
-      font-size: 18px;
-      border: none;
-      border-radius: 20px;
-      width: 130px;
-      height: 130px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: 0.3s;
-    }
-    .menu-btn:hover {
-      background-color: #45a049;
-    }
-    .hidden {
-      display: none !important;
-    }
-    .top-bar {
-      display: flex;
-      align-items: center;
-      background: white;
-      padding: 12px 16px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    .back-btn {
-      font-size: 28px;
-      margin-right: 12px;
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 12px;
-      background-color: #eaeaea;
-    }
-    .back-btn:hover {
-      background-color: #ddd;
-    }
-    .section-title {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 18px;
-    }
-    .grid7 {
-      display: flex;
-      overflow-x: auto;
-      padding: 10px;
-      gap: 10px;
-    }
-    .day-box {
-      min-width: 150px;
-      background-color: white;
-      border-radius: 16px;
-      padding: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      flex-shrink: 0;
-      cursor: pointer;
-    }
-    .day-box h3 {
-      margin: 0 0 5px 0;
-      font-size: 16px;
-      text-align: center;
-    }
-    .detail-form {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .input-meal {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      font-size: 16px;
-      width: 100%;
-    }
-    .save-btn {
-      padding: 12px;
-      background: #4CAF50;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px;
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .calendar-header h3 {
-      margin: 0;
-      font-size: 18px;
-      cursor: pointer;
-    }
-    .calendar-header button {
-      font-size: 24px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px 12px;
-      border-radius: 8px;
-    }
-    .calendar-days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      padding: 10px 16px;
-      font-weight: bold;
-      color: #555;
-      text-align: center;
-    }
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      padding: 10px 16px 30px;
-      gap: 8px;
-    }
-    .calendar-day {
-      background: #eee;
-      border-radius: 12px;
-      padding: 8px 4px;
-      font-size: 12px;
-      text-align: center;
-      min-height: 60px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      line-height: 1.4;
-    }
-    .today {
-      outline: 3px solid #4CAF50;
-    }
-    .popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    .popup-inner {
-      background: #fff;
-      padding: 20px;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 420px;
-      max-height: 85%;
-      overflow-y: auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      text-align: center;
-      box-sizing: border-box;
-      position: relative;
-    }
-    .popup-close {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #555;
-    }
-    .popup-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-      margin-bottom: 12px;
-    }
-    .popup-header h4 {
-      margin: 0;
-      font-size: 18px;
-    }
-    .popup-header button {
-      background: none;
-      border: none;
-      font-size: 22px;
-      cursor: pointer;
-    }
-    .month-grid-3col {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      padding-bottom: 20px;
-    }
-    .month-box {
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 6px;
-      font-size: 12px;
-      background-color: #f9f9f9;
-    }
-    .month-box h5 {
-      margin: 4px 0;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .month-days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      font-size: 10px;
-      gap: 2px;
-      text-align: center;
-      margin-top: 4px;
-    }
-    .month-day {
-      padding: 2px;
-      border-radius: 4px;
-    }
-    .month-day:hover {
-      background-color: #d9fdd3;
-      cursor: pointer;
-    }
-  </style>
+  <title>HatırLatif v2.5</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="mainMenu" class="grid-menu">
-    <button class="menu-btn" onclick="goToPage('diyetim')">Diyetim</button>
-    <button class="menu-btn" onclick="goToPage('kontrollerim')">Kontrollerim</button>
-    <button class="menu-btn" onclick="goToPage('takvim')">🗓️</button>
-    <button class="menu-btn" onclick="goToPage('hedeflerim')">Hedeflerim</button>
-  </div>
+  <div class="app">
+    <div id="main-menu" class="menu">
+      <button onclick="goToPage('diyetim')" class="menu-btn">Diyetim</button>
+      <button onclick="goToPage('kontrollerim')" class="menu-btn">Kontrollerim</button>
+      <button onclick="goToPage('takvim')" class="menu-btn">🗓️</button>
+      <button onclick="goToPage('hedeflerim')" class="menu-btn">Hedeflerim</button>
+    </div>
 
-  <div id="diyetimPage" class="hidden">
-    <div class="top-bar">
-      <span class="back-btn" onclick="goBack()">←</span>
-      <h2>Diyetim</h2>
-    </div>
-    <h3 class="section-title">Yaptıklarım</h3>
-    <div id="yaptiklar" class="grid7"></div>
-    <h3 class="section-title">Yapacaklarım</h3>
-    <div id="yapacaklar" class="grid7"></div>
-  </div>
-
-  <div id="dayDetailPage" class="hidden">
-    <div class="top-bar">
-      <span class="back-btn" onclick="goBack()">←</span>
-      <h2 id="detailDayName">Gün Detayı</h2>
-    </div>
-    <div class="detail-form">
-      <label>Sabah</label>
-      <input id="inputSabah" class="input-meal" placeholder="Sabah yemeği" />
-      <label>Öğle</label>
-      <input id="inputOgle" class="input-meal" placeholder="Öğle yemeği" />
-      <label>Akşam</label>
-      <input id="inputAksam" class="input-meal" placeholder="Akşam yemeği" />
-      <button class="save-btn" onclick="saveDayDetail()">Kaydet</button>
-    </div>
-  </div>
-
-  <div id="kontrollerimPage" class="hidden">
-    <div class="top-bar">
-      <span class="back-btn" onclick="goBack()">←</span>
-      <h2>Kontrollerim</h2>
-    </div>
-    <p style="text-align:center;">Bu bölüm çok yakında!</p>
-  </div>
-
-  <div id="hedeflerimPage" class="hidden">
-    <div class="top-bar">
-      <span class="back-btn" onclick="goBack()">←</span>
-      <h2>Hedeflerim</h2>
-    </div>
-    <p style="text-align:center;">Bu bölüm çok yakında!</p>
-  </div>
-
-  <div id="takvimPage" class="hidden">
-    <div class="top-bar">
-      <span class="back-btn" onclick="goBack()">←</span>
-      <h2>Takvim</h2>
-    </div>
-    <div class="calendar-header">
-      <button onclick="changeMonth(-1)">‹</button>
-      <h3 id="calendarTitle" onclick="toggleMonthPopup()">Nisan 2025</h3>
-      <button onclick="changeMonth(1)">›</button>
-    </div>
-    <div class="calendar-days">
-      <div>Pzt</div><div>Sal</div><div>Çar</div><div>Per</div><div>Cum</div><div>Cmt</div><div>Paz</div>
-    </div>
-    <div id="calendarGrid" class="calendar-grid"></div>
-  </div>
-
-  <div id="monthPopup" class="popup hidden" onclick="popupClickOutside(event)">
-    <div class="popup-inner" onclick="event.stopPropagation()">
-      <button class="popup-close" onclick="toggleMonthPopup()">×</button>
-      <div class="popup-header">
-        <button onclick="changePopupYear(-1)">‹</button>
-        <h4 id="popupYear">2025</h4>
-        <button onclick="changePopupYear(1)">›</button>
+    <div id="diyetim" class="page hidden">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="progress-circle">
+        <svg viewBox="0 0 36 36">
+          <path class="bg" d="M18 2.0845a15.9155 15.9155 0 1 1 0 31.831a15.9155 15.9155 0 1 1 0-31.831"/>
+          <path class="progress" id="calorieProgress" stroke-dasharray="0, 100" d="M18 2.0845a15.9155 15.9155 0 1 1 0 31.831a15.9155 15.9155 0 1 1 0-31.831"/>
+        </svg>
+        <div class="progress-text" id="calorieText">0%</div>
       </div>
-      <div id="popupMonthGrid" class="month-grid-3col"></div>
+      <div class="meal-cards">
+        <div class="meal-card">Kahvaltı</div>
+        <div class="meal-card">Öğle</div>
+        <div class="meal-card">Akşam</div>
+        <div class="meal-card">Ara Öğün</div>
+      </div>
+    </div>
+
+    <div id="kontrollerim" class="page hidden">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <h2>Kontrollerim</h2>
+      <p>Buraya ölçüm verileri gelecek.</p>
+    </div>
+
+    <div id="takvim" class="page hidden">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="calendar-header">
+        <button onclick="changeMonth(-1)">←</button>
+        <h2 id="monthYear" onclick="toggleMonthPopup()">Nisan 2025</h2>
+        <button onclick="changeMonth(1)">→</button>
+      </div>
+      <div class="calendar" id="calendar"></div>
+    </div>
+
+    <div id="hedeflerim" class="page hidden">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <h2>Hedeflerim</h2>
+      <label>Günlük Kalori Hedefi: <input type="number" id="calorieGoalInput" /> kcal</label>
+      <button onclick="saveGoal()">Kaydet</button>
+    </div>
+
+    <div id="monthPopup" class="popup hidden" onclick="closePopup(event)">
+      <div class="popup-content" onclick="event.stopPropagation()">
+        <div class="popup-header">
+          <button onclick="changePopupYear(-1)">←</button>
+          <h3 id="popupYear">2025</h3>
+          <button onclick="changePopupYear(1)">→</button>
+          <button class="close-btn" onclick="closePopup()">×</button>
+        </div>
+        <div id="popupMonths" class="popup-months"></div>
+      </div>
     </div>
   </div>
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f0f0f0;
+}
 
-  <script>
-  let currentDetailDate = "";
-let calendarMonthOffset = 0;
-let popupYear = new Date().getFullYear();
+.app {
+  padding: 20px;
+  text-align: center;
+}
+
+.menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  max-width: 400px;
+  margin: 100px auto;
+}
+
+.menu-btn {
+  padding: 30px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background-color: #00aaff;
+  color: white;
+}
+
+.page {
+  display: none;
+}
+
+.page.visible {
+  display: block;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+}
+
+.progress-circle {
+  width: 120px;
+  margin: 30px auto;
+  position: relative;
+}
+
+svg {
+  width: 100%;
+  height: auto;
+  transform: rotate(-90deg);
+}
+
+.bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.progress {
+  fill: none;
+  stroke: #00cc99;
+  stroke-width: 3.8;
+  stroke-linecap: round;
+}
+
+.progress-text {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  width: 100%;
+  font-size: 18px;
+}
+
+.meal-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.meal-card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 90%;
+}
+
+.popup-months {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background: none;
+  font-size: 22px;
+}
+
+.hidden {
+  display: none !important;
+}
 let historyStack = [];
 
-function goToPage(target) {
-  const currentPage = document.querySelector("body > div:not(.hidden)");
-  if (currentPage && currentPage.id !== target + "Page") {
-    historyStack.push(currentPage.id);
+function goToPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  const page = document.getElementById(id);
+  if (page) {
+    page.classList.remove("hidden");
+    historyStack.push(id);
   }
-  document.querySelectorAll("body > div").forEach(el => {
-    if (el.id.endsWith("Page") || el.id === "mainMenu") {
-      el.classList.add("hidden");
-    }
-  });
-  document.getElementById(target + "Page").classList.remove("hidden");
-  if (target === "takvim") generateCalendar();
 }
 
 function goBack() {
-  const popup = document.getElementById("monthPopup");
-  if (!popup.classList.contains("hidden")) {
-    popup.classList.add("hidden");
-    return;
-  }
-  const prevPageId = historyStack.pop() || "mainMenu";
-  document.querySelectorAll("body > div").forEach(el => {
-    if (el.id.endsWith("Page") || el.id === "mainMenu") {
-      el.classList.add("hidden");
-    }
-  });
-  document.getElementById(prevPageId).classList.remove("hidden");
-  if (prevPageId === "takvimPage") generateCalendar();
-}
-
-function getDateString(offset = 0) {
-  const d = new Date();
-  d.setDate(d.getDate() + offset);
-  return d.toISOString().split("T")[0];
-}
-
-function getData() {
-  return JSON.parse(localStorage.getItem("hatirlatif") || "{}");
-}
-
-function setData(data) {
-  localStorage.setItem("hatirlatif", JSON.stringify(data));
-}
-
-function loadData() {
-  const veriler = getData();
-  const yaptiklarDiv = document.getElementById("yaptiklar");
-  const yapacaklarDiv = document.getElementById("yapacaklar");
-  yaptiklarDiv.innerHTML = "";
-  yapacaklarDiv.innerHTML = "";
-
-  for (let i = 6; i >= 0; i--) {
-    const date = getDateString(-i);
-    const day = veriler[date] || { yaptiklarim: {}, yapacaklarim: {} };
-    const box = document.createElement("div");
-    box.className = "day-box";
-    box.innerHTML = `<h3>${date}</h3>
-      <p><strong>Sabah:</strong> ${day.yaptiklarim.sabah || "-"}</p>
-      <p><strong>Öğle:</strong> ${day.yaptiklarim.ogle || "-"}</p>
-      <p><strong>Akşam:</strong> ${day.yaptiklarim.aksam || "-"}</p>`;
-    yaptiklarDiv.appendChild(box);
-  }
-
-  for (let i = 0; i < 7; i++) {
-    const date = getDateString(i);
-    const day = getData()[date] || { yaptiklarim: {}, yapacaklarim: {} };
-    const box = document.createElement("div");
-    box.className = "day-box";
-    box.innerHTML = `<h3>${date}</h3>
-      <p>Sabah: ${day.yapacaklarim.sabah || "-"}</p>
-      <p>Öğle: ${day.yapacaklarim.ogle || "-"}</p>
-      <p>Akşam: ${day.yapacaklarim.aksam || "-"}</p>`;
-    box.onclick = () => openDayDetail(date);
-    yapacaklarDiv.appendChild(box);
+  historyStack.pop();
+  const previousPage = historyStack[historyStack.length - 1] || "main-menu";
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  if (previousPage === "main-menu") {
+    document.getElementById("main-menu").classList.remove("hidden");
+  } else {
+    document.getElementById(previousPage).classList.remove("hidden");
   }
 }
 
-function openDayDetail(date) {
-  const data = getData()[date]?.yapacaklarim || {};
-  currentDetailDate = date;
-  document.getElementById("detailDayName").innerText = `Gün: ${date}`;
-  document.getElementById("inputSabah").value = data.sabah || "";
-  document.getElementById("inputOgle").value = data.ogle || "";
-  document.getElementById("inputAksam").value = data.aksam || "";
-  goToPage("dayDetail");
+function saveGoal() {
+  const goal = document.getElementById("calorieGoalInput").value;
+  localStorage.setItem("calorieGoal", goal);
+  alert("Hedef kaydedildi!");
 }
 
-function saveDayDetail() {
-  const veriler = getData();
-  const date = currentDetailDate;
-  if (!veriler[date]) veriler[date] = { yaptiklarim: {}, yapacaklarim: {} };
-  veriler[date].yapacaklarim = {
-    sabah: document.getElementById("inputSabah").value,
-    ogle: document.getElementById("inputOgle").value,
-    aksam: document.getElementById("inputAksam").value
-  };
-  setData(veriler);
-  loadData();
-  goBack();
+function updateProgress() {
+  const current = 1200; // Örnek değer
+  const goal = localStorage.getItem("calorieGoal") || 2000;
+  const percent = Math.min(100, Math.round((current / goal) * 100));
+  document.getElementById("calorieText").textContent = `${percent}%`;
+  document.getElementById("calorieProgress").setAttribute("stroke-dasharray", `${percent},100`);
 }
+
+function generateCalendar(month, year) {
+  const calendar = document.getElementById("calendar");
+  calendar.innerHTML = "";
+
+  const firstDay = new Date(year, month).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let i = 0; i < firstDay; i++) {
+    calendar.innerHTML += "<div></div>";
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement("div");
+    cell.textContent = d;
+    cell.classList.add("calendar-day");
+    calendar.appendChild(cell);
+  }
+  document.getElementById("monthYear").textContent = `${getMonthName(month)} ${year}`;
+}
+
+function getMonthName(month) {
+  const months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+  return months[month];
+}
+
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
 function changeMonth(offset) {
-  calendarMonthOffset += offset;
-  generateCalendar();
-}
-
-function generateCalendar() {
-  const grid = document.getElementById("calendarGrid");
-  const title = document.getElementById("calendarTitle");
-  grid.innerHTML = "";
-
-  const now = new Date();
-  const viewDate = new Date(now.getFullYear(), now.getMonth() + calendarMonthOffset, 1);
-  const year = viewDate.getFullYear();
-  const month = viewDate.getMonth();
-  const todayStr = now.toISOString().split("T")[0];
-
-  const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
-  title.textContent = `${monthNames[month]} ${year}`;
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const startOffset = firstDay === 0 ? 6 : firstDay - 1;
-
-  for (let i = 0; i < startOffset; i++) {
-    const emptyBox = document.createElement("div");
-    emptyBox.className = "calendar-day";
-    grid.appendChild(emptyBox);
+  currentMonth += offset;
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  } else if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
   }
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-    const box = document.createElement("div");
-    box.className = "calendar-day";
-    if (dateStr === todayStr) box.classList.add("today");
-    box.innerHTML = `<strong>${day}</strong>`;
-    grid.appendChild(box);
-  }
+  generateCalendar(currentMonth, currentYear);
 }
 
 function toggleMonthPopup() {
-  const popup = document.getElementById("monthPopup");
-  popup.classList.toggle("hidden");
-  if (!popup.classList.contains("hidden")) {
-    document.getElementById("popupYear").innerText = popupYear;
-    renderPopupMonths();
+  if (!document.getElementById("takvim").classList.contains("hidden")) {
+    document.getElementById("popupYear").textContent = currentYear;
+    renderPopupMonths(currentYear);
+    document.getElementById("monthPopup").classList.remove("hidden");
   }
 }
 
-function popupClickOutside(event) {
-  const popup = document.getElementById("monthPopup");
-  popup.classList.add("hidden");
+function renderPopupMonths(year) {
+  const container = document.getElementById("popupMonths");
+  container.innerHTML = "";
+  for (let m = 0; m < 12; m++) {
+    const div = document.createElement("div");
+    div.textContent = getMonthName(m);
+    div.onclick = () => {
+      currentMonth = m;
+      currentYear = year;
+      generateCalendar(currentMonth, currentYear);
+      closePopup();
+    };
+    container.appendChild(div);
+  }
+}
+
+function closePopup(event) {
+  if (!event || event.target === document.getElementById("monthPopup")) {
+    document.getElementById("monthPopup").classList.add("hidden");
+  }
 }
 
 function changePopupYear(offset) {
-  popupYear += offset;
-  document.getElementById("popupYear").innerText = popupYear;
-  renderPopupMonths();
+  const year = parseInt(document.getElementById("popupYear").textContent) + offset;
+  document.getElementById("popupYear").textContent = year;
+  renderPopupMonths(year);
 }
 
-function renderPopupMonths() {
-  const container = document.getElementById("popupMonthGrid");
-  container.innerHTML = "";
-
-  const monthNames = [
-    "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
-    "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
-  ];
-
-  for (let i = 0; i < 12; i++) {
-    const monthBox = document.createElement("div");
-    monthBox.className = "month-box";
-
-    const monthName = document.createElement("h5");
-    monthName.innerText = monthNames[i];
-    monthBox.appendChild(monthName);
-
-    const daysGrid = document.createElement("div");
-    daysGrid.className = "month-days";
-
-    const daysInMonth = new Date(popupYear, i + 1, 0).getDate();
-    const firstDay = new Date(popupYear, i, 1).getDay();
-    const startOffset = firstDay === 0 ? 6 : firstDay - 1;
-
-    for (let k = 0; k < startOffset; k++) {
-      const empty = document.createElement("div");
-      daysGrid.appendChild(empty);
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dayDiv = document.createElement("div");
-      dayDiv.className = "month-day";
-      dayDiv.innerText = day;
-      dayDiv.onclick = () => {
-        const now = new Date();
-        calendarMonthOffset = (popupYear - now.getFullYear()) * 12 + (i - now.getMonth());
-        generateCalendar();
-        document.getElementById("monthPopup").classList.add("hidden");
-      };
-      daysGrid.appendChild(dayDiv);
-    }
-
-    monthBox.appendChild(daysGrid);
-    container.appendChild(monthBox);
-  }
-}
-
-loadData();
-generateCalendar();
-</script>
-</body>
-</html>
+window.onload = () => {
+  generateCalendar(currentMonth, currentYear);
+  updateProgress();
+};
